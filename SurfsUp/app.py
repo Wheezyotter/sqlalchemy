@@ -97,7 +97,34 @@ def stations():
 
 @app.route("/api/v1.0/tobs")
 def tobs():
-    return "Temperature"
+
+    latest_date = session.query(measurement.date).\
+                        order_by(measurement.date.desc()).\
+                        first()
+    
+    # Converts latest date to datetime format
+    latest_date_dt = dt.datetime.strptime(latest_date[0], '%Y-%m-%d').date()
+    query_date = latest_date_dt - dt.timedelta(weeks = 52.2)
+
+    station_query = session.query(measurement.station, func.count(measurement.station)).\
+                            group_by(measurement.station).\
+                            order_by(func.count(measurement.station).desc()).\
+                            all()
+
+    latest_year_temp_query =  session.query(measurement.date, measurement.tobs).\
+                                filter(measurement.station == station_query[0][0]).\
+                                filter((measurement.date >= query_date)).\
+                                order_by(measurement.date).\
+                                all()
+    
+    latest_year_temp = []
+    for date, temp in latest_year_temp_query:
+        dates_temp = {}
+        dates_temp["date"] = date
+        dates_temp["temp"] = temp
+        latest_year_temp.append(dates_temp)  
+
+    return jsonify(latest_year_temp)
 
 @app.route("/api/v1.0/<start>")
 def start():
