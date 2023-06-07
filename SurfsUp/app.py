@@ -127,12 +127,54 @@ def tobs():
     return jsonify(latest_year_temp)
 
 @app.route("/api/v1.0/<start>")
-def start():
-    return "Start"
+def start(start):
+    latest_date = session.query(measurement.date).\
+                          order_by(measurement.date.desc()).\
+                          first()
+    
+    latest_date_dt = dt.datetime.strptime(latest_date[0], '%Y-%m-%d').date()
+    # Look into proper date conversions
+    start_date = dt.datetime.strptime(start, '%Y-%m-%d').date()
+
+    start_temp_query = session.query(measurement.date, measurement.tobs).\
+                               filter(measurement.date >= start_date).\
+                               order_by(measurement.date).\
+                               all()
+    
+    start_date_temp = []
+    for date, temp in start_temp_query:
+        dates_temp = {}
+        dates_temp["date"] = date
+        dates_temp["temp"] = temp
+        start_date_temp.append(dates_temp)  
+
+    return jsonify(start_date_temp)
 
 @app.route("/api/v1.0/<start>/<end>")
-def end():
-    return "End"
+def end(start, end):
+    latest_date = session.query(measurement.date).\
+                          order_by(measurement.date.desc()).\
+                          first()
+    
+    latest_date_dt = dt.datetime.strptime(latest_date[0], '%Y-%m-%d').date()
+    # Look into proper date conversions
+    start_date = dt.datetime.strptime(start, '%Y-%m-%d').date()
+    end_date = dt.datetime.strptime(end, '%Y-%m-%d').date()
+
+    start_end_temp_query = session.query(measurement.date, measurement.tobs).\
+                               filter(measurement.date >= start_date).\
+                               filter(measurement.date <= end_date).\
+                               order_by(measurement.date).\
+                               all()
+    
+    start_end_date_temp = []
+    for date, temp in start_end_temp_query:
+        dates_temp = {}
+        dates_temp["date"] = date
+        dates_temp["temp"] = temp
+        start_end_date_temp.append(dates_temp)  
+
+    return jsonify(start_end_date_temp)
 
 if __name__ == "__main__":
     app.run(debug=True)
