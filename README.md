@@ -10,6 +10,7 @@ In climate_analysis.ipynb tables are reflected from hawaii.sqlite. The precipita
 <img src='SurfsUp/Figures/precipitation_16_17.jpg'/>
 
 All unique stations are listed along with the number of measurements they have made. The min, maximum, and average temperature are displayed from the most active station. All temperatures from that station are then displayed and plotted on a histogram.
+
 <img src='SurfsUp/Figures/temperature_16_17.jpg'/>
 
 ### Climate App
