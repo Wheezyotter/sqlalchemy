@@ -44,8 +44,8 @@ def index():
             f"<li>Precipitation : <a href='http://127.0.0.1:5000/api/v1.0/precipitation' target='_blank'> /api/v1.0/precipitation </a></li>"
             f"<li>Stations: <a href='http://127.0.0.1:5000/api/v1.0/stations' target='_blank'> /api/v1.0/stations</a></li>"
             f"<li>Temperature: <a href='http://127.0.0.1:5000/api/v1.0/tobs' target='_blank'> /api/v1.0/tobs</a></li>"
-            f"<li>Insert Start Date: /api/v1.0/<start></li>"
-            f"<li>Insert Date Range: /api/v1.0/<start>/<end></li>"
+            f"<li>Insert Start Date (YY-MM-DD): /api/v1.0/<start></li>"
+            f"<li>Insert Date Range (YY-MM-DD): /api/v1.0/<start>/<end></li>"
             f"</ul>"
             )
 
@@ -143,20 +143,16 @@ def tobs():
 
 @app.route("/api/v1.0/<start>")
 def start(start):
-    # Finds the most recent date in the data
-    latest_date = session.query(measurement.date).\
-                          order_by(measurement.date.desc()).\
-                          first()
-    
-    latest_date_dt = dt.datetime.strptime(latest_date[0], '%Y-%m-%d').date()
-    # Look into proper date conversions
+    # Converts user date input into datetime format
     start_date = dt.datetime.strptime(start, '%Y-%m-%d').date()
 
+    # Queries all temperature measurement from start date to latest date
     start_temp_query = session.query(measurement.date, measurement.tobs).\
                                filter(measurement.date >= start_date).\
                                order_by(measurement.date).\
                                all()
     
+    # Formats data into a dictionary
     start_date_temp = []
     for date, temp in start_temp_query:
         dates_temp = {}
@@ -164,25 +160,31 @@ def start(start):
         dates_temp["temp"] = temp
         start_date_temp.append(dates_temp)  
 
+    # Returns in json format
     return jsonify(start_date_temp)
 
 @app.route("/api/v1.0/<start>/<end>")
 def end(start, end):
+    # Finds the most recent date in the data
     latest_date = session.query(measurement.date).\
                           order_by(measurement.date.desc()).\
                           first()
     
+    # Converts latest date to datetime format
     latest_date_dt = dt.datetime.strptime(latest_date[0], '%Y-%m-%d').date()
-    # Look into proper date conversions
+
+    # Converts user date input into datetime format
     start_date = dt.datetime.strptime(start, '%Y-%m-%d').date()
     end_date = dt.datetime.strptime(end, '%Y-%m-%d').date()
 
+    # Queries all temperatures between start and end dates
     start_end_temp_query = session.query(measurement.date, measurement.tobs).\
                                filter(measurement.date >= start_date).\
                                filter(measurement.date <= end_date).\
                                order_by(measurement.date).\
                                all()
-    
+
+    # Formats data into a dictionary
     start_end_date_temp = []
     for date, temp in start_end_temp_query:
         dates_temp = {}
@@ -190,6 +192,7 @@ def end(start, end):
         dates_temp["temp"] = temp
         start_end_date_temp.append(dates_temp)  
 
+    # Returns in json format
     return jsonify(start_end_date_temp)
 
 if __name__ == "__main__":
