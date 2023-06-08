@@ -44,8 +44,8 @@ def index():
             f"<li>Precipitation : <a href='http://127.0.0.1:5000/api/v1.0/precipitation' target='_blank'> /api/v1.0/precipitation </a></li>"
             f"<li>Stations: <a href='http://127.0.0.1:5000/api/v1.0/stations' target='_blank'> /api/v1.0/stations</a></li>"
             f"<li>Temperature: <a href='http://127.0.0.1:5000/api/v1.0/tobs' target='_blank'> /api/v1.0/tobs</a></li>"
-            f"<li>Insert Start Date (YY-MM-DD): /api/v1.0/<start></li>"
-            f"<li>Insert Date Range (YY-MM-DD): /api/v1.0/<start>/<end></li>"
+            f"<li>Insert Start Date (YYYY-MM-DD): /api/v1.0/<start></li>"
+            f"<li>Insert Date Range (YYYY-MM-DD): /api/v1.0/<start>/<end></li>"
             f"</ul>"
             )
 
