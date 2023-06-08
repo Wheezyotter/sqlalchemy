@@ -24,4 +24,4 @@ Script was made for UCB Data Analytics Challenge 10
 
 Author - Jacob Pohs
 
-Some code provided by provided 'starter_code'
+Some code written by provided 'starter_code'
